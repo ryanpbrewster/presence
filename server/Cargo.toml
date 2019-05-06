@@ -1,7 +1,21 @@
 [package]
-name = "server"
+name = "rocksdb-server"
 version = "0.1.0"
-authors = ["Ryan P. Brewster <RyanPBrewster@gmail.com>"]
+authors = ["Ryan Brewster <ryanpbrewster@google.com"]
 edition = "2018"
 
+[[bin]]
+name = "server"
+path = "src/bin/run-server.rs"
+
 [dependencies]
+bytes = "0.4"
+futures = "0.1"
+prost = "0.4"
+prost-derive = "0.4"
+tokio = "0.1"
+tower-h2 = { git = "https://github.com/tower-rs/tower-h2" }
+tower-grpc = { git = "https://github.com/tower-rs/tower-grpc" }
+
+[build-dependencies]
+tower-grpc-build = { path = "../tower-grpc-build" }

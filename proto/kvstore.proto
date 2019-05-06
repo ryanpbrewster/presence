@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package kvstore;
+
+// The kvstore service definition.
+service KvStore {
+  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+
+  rpc Put (PutRequest) returns (PutResponse) {}
+  rpc Get (GetRequest) returns (GetResponse) {}
+  rpc Scan (ScanRequest) returns (stream ScanResponse) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloResponse {
+  string message = 1;
+}
+
+// request to Put a key-value pair
+message PutRequest {
+  string key = 1;
+  string value = 2;
+}
+
+// response to a Put request
+message PutResponse {
+}
+
+// request to Get a key-value pair (by key)
+message GetRequest {
+  string key = 1;
+}
+
+// response to a Get request
+message GetResponse {
+  string value = 1;
+}
+
+// request to Scan a contiguous range of key-value pairs
+message ScanRequest {
+  string start = 1; // ignored if empty
+  string end = 2;   // ignored if empty
+}
+
+// response to a Scan request
+message ScanResponse {
+  string key = 1;
+  string value = 2;
+}
