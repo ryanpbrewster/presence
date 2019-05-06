@@ -4,10 +4,7 @@ use std::ops::Bound;
 use tower_grpc::{Code, Request, Response, Status};
 
 use crate::proto::server;
-use crate::proto::{
-    GetRequest, GetResponse, HelloRequest, HelloResponse, PutRequest, PutResponse, ScanRequest,
-    ScanResponse,
-};
+use crate::proto::{HelloRequest, HelloResponse, PutRequest, PutResponse, ScanRequest, ScanResponse};
 use crate::storage::StorageLayer;
 
 #[derive(Clone, Debug, Default)]
@@ -19,16 +16,14 @@ impl<T: StorageLayer> ServerImpl<T> {
     pub fn new(storage: T) -> Self {
         ServerImpl { storage }
     }
-    pub fn into_service(self) -> server::KvStoreServer<Self> {
-        server::KvStoreServer::new(self)
+    pub fn into_service(self) -> server::PresenceServer<Self> {
+        server::PresenceServer::new(self)
     }
 }
 
-impl<T: StorageLayer> server::KvStore for ServerImpl<T> {
+impl<T: StorageLayer> server::Presence for ServerImpl<T> {
     type SayHelloFuture = future::FutureResult<Response<HelloResponse>, Status>;
     type PutFuture = future::FutureResult<Response<PutResponse>, Status>;
-    type GetFuture = future::FutureResult<Response<GetResponse>, Status>;
-
     type ScanStream = Box<Stream<Item = ScanResponse, Error = Status> + Send>;
     type ScanFuture = future::FutureResult<Response<Self::ScanStream>, Status>;
 
@@ -50,18 +45,6 @@ impl<T: StorageLayer> server::KvStore for ServerImpl<T> {
         );
         match result {
             Ok(_) => future::ok(Response::new(PutResponse {})),
-            Err(err) => future::err(err.into()),
-        }
-    }
-
-    fn get(&mut self, request: Request<GetRequest>) -> Self::GetFuture {
-        println!("GetRequest = {:?}", request);
-
-        let key = request.get_ref().key.clone();
-        let result = self.storage.get(&request.get_ref().key);
-        match result {
-            Ok(Some(value)) => future::ok(Response::new(GetResponse { value })),
-            Ok(None) => future::err(Status::new(Code::NotFound, format!("no such key: {}", key))),
             Err(err) => future::err(err.into()),
         }
     }

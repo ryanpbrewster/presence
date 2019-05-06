@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 
 use futures::sync::mpsc::UnboundedReceiver;
 
-use crate::{KvError, KvResult};
+use crate::KvResult;
 
 pub trait StorageLayer: Clone {
     fn put(&self, key: String, value: String) -> KvResult<()>;

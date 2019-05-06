@@ -3,8 +3,8 @@ use tokio::executor::DefaultExecutor;
 use tokio::net::TcpListener;
 use tower_h2::Server;
 
-use rocksdb_server::server::ServerImpl;
-use rocksdb_server::storage::InMemoryStorageLayer;
+use presence_server::server::ServerImpl;
+use presence_server::storage::InMemoryStorageLayer;
 
 pub fn main() {
     let store = InMemoryStorageLayer::default();

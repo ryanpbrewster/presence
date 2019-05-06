@@ -1,6 +1,6 @@
 pub mod proto {
     use prost_derive::Message;
-    include!(concat!(env!("OUT_DIR"), "/kvstore.rs"));
+    include!(concat!(env!("OUT_DIR"), "/presence.rs"));
 }
 
 pub type KvResult<T> = std::result::Result<T, KvError>;

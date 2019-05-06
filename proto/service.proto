@@ -1,13 +1,12 @@
 syntax = "proto3";
 
-package kvstore;
+package presence;
 
-// The kvstore service definition.
-service KvStore {
+// The presence service definition.
+service Presence {
   rpc SayHello (HelloRequest) returns (HelloResponse) {}
 
   rpc Put (PutRequest) returns (PutResponse) {}
-  rpc Get (GetRequest) returns (GetResponse) {}
   rpc Scan (ScanRequest) returns (stream ScanResponse) {}
 }
 
@@ -29,16 +28,6 @@ message PutRequest {
 
 // response to a Put request
 message PutResponse {
-}
-
-// request to Get a key-value pair (by key)
-message GetRequest {
-  string key = 1;
-}
-
-// response to a Get request
-message GetResponse {
-  string value = 1;
 }
 
 // request to Scan a contiguous range of key-value pairs

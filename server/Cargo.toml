@@ -1,5 +1,5 @@
 [package]
-name = "rocksdb-server"
+name = "presence-server"
 version = "0.1.0"
 authors = ["Ryan Brewster <ryanpbrewster@google.com"]
 edition = "2018"
