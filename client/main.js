@@ -5,7 +5,7 @@ const definition = loader.loadSync("../proto/service.proto");
 const proto = grpc.loadPackageDefinition(definition);
 
 // This is a GCE f1-micro instance running the presence server
-// const HOST = "34.83.221.62";
+// const HOST = "34.83.99.224";
 const HOST = "localhost";
 const client = new proto.presence.Presence(`${HOST}:50051`, grpc.credentials.createInsecure());
 
