@@ -18,7 +18,7 @@ pub fn main() {
         DefaultExecutor::current(),
     );
 
-    let addr = "[::1]:50051".parse().unwrap();
+    let addr = "[::]:50051".parse().unwrap();
     let bind = TcpListener::bind(&addr).expect("bind");
 
     println!("listening on {}...", addr);
@@ -36,7 +36,7 @@ pub fn main() {
         })
         .map_err(|e| eprintln!("accept error: {}", e));
 
-    let timer = tokio::timer::Interval::new_interval(Duration::from_millis(100))
+    let timer = tokio::timer::Interval::new_interval(Duration::from_millis(1_000))
         .for_each(move |_| futures::future::ok(broadcast.broadcast()))
         .map_err(|e| eprintln!("accept error: {}", e));
 
