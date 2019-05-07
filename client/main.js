@@ -3,7 +3,11 @@ const loader = require("@grpc/proto-loader");
 
 const definition = loader.loadSync("../proto/service.proto");
 const proto = grpc.loadPackageDefinition(definition);
-const client = new proto.presence.Presence("localhost:50051", grpc.credentials.createInsecure());
+
+// This is a GCE f1-micro instance running the presence server
+// const HOST = "34.83.221.62";
+const HOST = "localhost";
+const client = new proto.presence.Presence(`${HOST}:50051`, grpc.credentials.createInsecure());
 
 async function main() {
   console.log("starting sayHello...");
