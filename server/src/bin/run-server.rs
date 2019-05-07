@@ -3,12 +3,15 @@ use tokio::executor::DefaultExecutor;
 use tokio::net::TcpListener;
 use tower_h2::Server;
 
+use presence_server::broadcast::BroadcastLayer;
 use presence_server::server::ServerImpl;
-use presence_server::storage::InMemoryStorageLayer;
+use std::time::Duration;
 
 pub fn main() {
-    let store = InMemoryStorageLayer::default();
-    let kvstore_service = ServerImpl::new(store);
+    let broadcast = BroadcastLayer::default();
+    let kvstore_service = ServerImpl {
+        broadcast: broadcast.clone(),
+    };
     let mut server = Server::new(
         kvstore_service.into_service(),
         Default::default(),
@@ -18,6 +21,7 @@ pub fn main() {
     let addr = "[::1]:50051".parse().unwrap();
     let bind = TcpListener::bind(&addr).expect("bind");
 
+    println!("listening on {}...", addr);
     let serve = bind
         .incoming()
         .for_each(move |sock| {
@@ -32,6 +36,12 @@ pub fn main() {
         })
         .map_err(|e| eprintln!("accept error: {}", e));
 
-    println!("listening on {}...", addr);
-    tokio::run(serve)
+    let timer = tokio::timer::Interval::new_interval(Duration::from_millis(100))
+        .for_each(move |_| futures::future::ok(broadcast.broadcast()))
+        .map_err(|e| eprintln!("accept error: {}", e));
+
+    let mut rt = tokio::runtime::Runtime::new().unwrap();
+    rt.spawn(serve);
+    rt.spawn(timer);
+    rt.shutdown_on_idle().wait().unwrap();
 }

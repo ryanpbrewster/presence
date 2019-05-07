@@ -18,25 +18,11 @@ async function main() {
     });
   });
 
-  console.log("starting put...");
-  const my_key = `my_key_${Date.now()}`;
+  let park = client.park({});
   await new Promise(resolve => {
-    client.put({ key: my_key, value: `rnd = ${Math.random()}` }, (err, resp) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(resp);
-      }
-      resolve();
-    });
-  });
-
-  console.log("starting full scan...");
-  let scan = client.scan({});
-  await new Promise(resolve => {
-    scan.on('data', r => { console.log(r); });
-    scan.on('end', () => { resolve(); });
-    scan.on('error', e => { console.error(e); resolve(); });
+    park.on('data', r => { console.log(r); });
+    park.on('end', () => { resolve(); });
+    park.on('error', e => { console.error(e); resolve(); });
   });
 }
 
